@@ -1,0 +1,209 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      UserRole @default(EMPLOYEE)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relaciones
+  sales     Sale[]
+  cashSessions CashSession[]
+
+  @@map("users")
+}
+
+model Product {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  price       Decimal @db.Decimal(10, 2)
+  cost        Decimal @db.Decimal(10, 2)
+  stock       Int     @default(0)
+  minStock    Int     @default(5)
+  category    String?
+  barcode     String? @unique
+  isActive    Boolean @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relaciones
+  saleItems   SaleItem[]
+
+  @@map("products")
+}
+
+model Sale {
+  id          String   @id @default(cuid())
+  total       Decimal  @db.Decimal(10, 2)
+  subtotal    Decimal  @db.Decimal(10, 2)
+  tax         Decimal  @db.Decimal(10, 2) @default(0)
+  discount    Decimal  @db.Decimal(10, 2) @default(0)
+  paymentMethod PaymentMethod
+  status      SaleStatus @default(COMPLETED)
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relaciones
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  items       SaleItem[]
+  cashSessionId String?
+  cashSession   CashSession? @relation(fields: [cashSessionId], references: [id])
+
+  @@map("sales")
+}
+
+model SaleItem {
+  id        String  @id @default(cuid())
+  quantity  Int
+  price     Decimal @db.Decimal(10, 2)
+  subtotal  Decimal @db.Decimal(10, 2)
+  createdAt DateTime @default(now())
+
+  // Relaciones
+  saleId    String
+  sale      Sale    @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@map("sale_items")
+}
+
+model CashSession {
+  id          String   @id @default(cuid())
+  startAmount Decimal  @db.Decimal(10, 2) @default(0)
+  endAmount   Decimal? @db.Decimal(10, 2)
+  totalSales  Decimal  @db.Decimal(10, 2) @default(0)
+  status      CashSessionStatus @default(OPEN)
+  openedAt    DateTime @default(now())
+  closedAt    DateTime?
+  notes       String?
+
+  // Relaciones
+  userId      String
+  user        User    @relation(fields: [userId], references: [id])
+  sales       Sale[]
+
+  @@map("cash_sessions")
+}
+
+model InventoryMovement {
+  id          String   @id @default(cuid())
+  type        MovementType
+  quantity    Int
+  reason      String?
+  createdAt   DateTime @default(now())
+
+  // Relaciones
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@map("inventory_movements")
+}
+
+model AIConversation {
+  id        String   @id @default(cuid())
+  title     String
+  messages  Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relaciones
+  userId    String
+  user      User    @relation(fields: [userId], references: [id])
+
+  @@map("ai_conversations")
+}
+
+// Enums
+enum UserRole {
+  ADMIN
+  MANAGER
+  EMPLOYEE
+}
+
+enum PaymentMethod {
+  CASH
+  CARD
+  TRANSFER
+  MIXED
+}
+
+enum SaleStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+  REFUNDED
+}
+
+enum CashSessionStatus {
+  OPEN
+  CLOSED
+}
+
+enum MovementType {
+  IN
+  OUT
+  ADJUSTMENT
+  RETURN
+}
+
+// Agregar relación faltante en Product
+model Product {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  price       Decimal @db.Decimal(10, 2)
+  cost        Decimal @db.Decimal(10, 2)
+  stock       Int     @default(0)
+  minStock    Int     @default(5)
+  category    String?
+  barcode     String? @unique
+  isActive    Boolean @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relaciones
+  saleItems   SaleItem[]
+  movements   InventoryMovement[]
+
+  @@map("products")
+}
+
+// Agregar relación faltante en User
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      UserRole @default(EMPLOYEE)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relaciones
+  sales     Sale[]
+  cashSessions CashSession[]
+  movements InventoryMovement[]
+  conversations AIConversation[]
+
+  @@map("users")
+}
