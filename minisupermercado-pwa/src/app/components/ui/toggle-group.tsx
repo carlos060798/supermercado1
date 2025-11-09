@@ -4,8 +4,29 @@ import * as React from 'react'
 import * as ToggleGroupPrimitive from '@radix-ui/react-toggle-group'
 import { type VariantProps } from 'class-variance-authority'
 
-import { cn } from '@/lib/utils'
-import { toggleVariants } from '@/components/ui/toggle'
+import { cn } from '@/utils/utils'
+import { cva } from 'class-variance-authority'
+
+const toggleVariants = cva(
+  'inline-flex h-9 items-center justify-center rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background data-[state=on]:bg-primary data-[state=on]:text-primary-foreground hover:bg-accent hover:text-accent-foreground',
+  {
+    variants: {
+      variant: {
+        default: 'bg-transparent border border-border',
+        outline: 'bg-background border border-border',
+      },
+      size: {
+        default: 'h-9 px-3',
+        sm: 'h-8 px-2.5',
+        lg: 'h-10 px-4',
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+      size: 'default',
+    },
+  },
+) 
 
 const ToggleGroupContext = React.createContext<
   VariantProps<typeof toggleVariants>

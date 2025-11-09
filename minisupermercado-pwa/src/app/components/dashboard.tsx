@@ -12,15 +12,15 @@ import {
   Plus,
   FileText,
   Calculator,
-  Badge,
 } from "lucide-react"
+import { Badge } from "./ui/badge"
 import { ProductManagement } from "./product-management"
 import { SalesRegistration } from "./sales-registration"
 import { ReportsInterface } from "./reports-interface"
 import { CashClosing } from "./cash-closing"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card"
-import { Button } from "react-day-picker"
+import { Button } from "./ui/button"
 
 export function Dashboard() {
   const [activeTab, setActiveTab] = useState("dashboard")

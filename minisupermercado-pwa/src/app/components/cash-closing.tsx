@@ -1,12 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
+import { Badge } from "./ui/badge"
+import { Button } from "./ui/button"
+import { Card, CardContent, CardDescription, CardTitle } from "./ui/card"
 import {
   Dialog,
   DialogContent,
@@ -14,14 +11,13 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-// If this import fails, check that the file exists at src/components/ui/dialog.tsx or dialog/index.tsx
-// If your Dialog component is located elsewhere, update the import path accordingly, e.g.:
-// } from "../ui/dialog"
-// or
-// } from "../../ui/dialog"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Textarea } from "@/components/ui/textarea"
+} from "./ui/dialog"
+import { Input } from "./ui/input"
+import { Label } from "./ui/label"  
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table"
+import { Separator } from "./ui/separator"
+
+
 import {
   Calculator,
   DollarSign,
@@ -36,6 +32,8 @@ import {
   Banknote,
   Smartphone,
 } from "lucide-react"
+import { Textarea } from "./ui/textarea"
+import { CardHeader } from "./ui/card"
 
 interface DailySummary {
   date: string
